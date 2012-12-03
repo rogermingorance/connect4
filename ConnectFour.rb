@@ -13,7 +13,7 @@ class ConnectFour
 	def createBoard
 		@board = "|" + (1..@columns).to_a.join('') + "|\n"
 		@board += ("|" + "." * @columns + "|\n") * @rows
-		@board += "-" * (@columns + 2) + "\n"
+		@board += "=" * (@columns + 2) + "\n"
 	end
 
 	def printBoard
@@ -36,6 +36,68 @@ class ConnectFour
 			end
 		end
 	end
+
+	def winner
+		# check horizontal
+		@fields.each_slice(@columns) do |r|  # scan each row
+			@players.each do |p| # check each player
+				r.each_cons(4) do |c| # check each consecutive 4 elements
+					players = c.uniq  # store the players placed in those 4 elements
+					return p if players.length == 1 and players.index(p) != nil # winner if only one in 4
+				end
+			end
+		end
+
+		# check vertical
+		@columns.times do |c|
+			column = Array.new
+			@rows.times do |r|
+				index = c + (@columns * r)
+				column.push @fields[index]
+			end
+
+			column.each_cons(4) do |i|
+				player = i.uniq.join
+				return player if player.length == 1 and @players.index(player) != nil
+			end
+		end
+
+		# check diagonal left
+		@fields.each_index do |f|
+			fields = Array.new
+			fields << @fields[f]
+			(1..3).each do |t|
+				next_index = f + ((@columns + 1) * t)
+				next if next_index >= @fields.length or next_index % @columns == 0
+				fields << @fields[next_index]
+			end
+			next if fields.length < 4
+			player = fields.uniq.join
+			return player if player.length == 1 and @players.index(player) != nil
+		end
+
+		#check diagonal right
+		@fields.each_index do |f|
+			fields = Array.new
+			fields << @fields[f]
+			(1..3).each do |t|
+				next_index = f - ((@columns - 1) * t)
+				next if next_index < 0 or next_index % @columns == 0
+				fields << @fields[next_index]
+			end
+			next if fields.length < 4
+			player = fields.uniq.join
+			return player if player.length == 1 and @players.index(player) != nil
+		end
+
+		nil
+	end
+
+	def draw?
+		@fields.index('.') == nil
+	end
+
+	private
 
 	def next_player
 		current_index = @players.index(@player)

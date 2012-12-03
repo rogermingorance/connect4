@@ -15,18 +15,32 @@ game = ConnectFour.new(height, width)
 displayGame(game)
 
 loop do
+	# User's turn
 	playerMove = gets.chomp
-	case playerMove #still needs to accomodate for ilegal values!
+	case playerMove #@todo needs to accomodate for ilegal values!!!!!!!!!
 	when "q", "Q" then break;
-	when "r", "R" then break;
+	when "r", "R" then
+		game = ConnectFour.new(height, width)
 	else game.dropChip(Integer(playerMove))
 	end
 	displayGame(game)
 
+	#verify if game won
+	if winner = game.winner
+		puts "Player #{winner} has won!"
+		break
+	elsif game.draw?
+		puts 'The game ended in a draw...'
+		break
+	end
+
+
+
+
 =begin
-	1) Accept input from user -- modify board array value
-	2) Display board
-	3) Verify if game is won (break if won)
+	x 1) Accept input from user -- modify board array value
+	x 2) Display board
+	x 3) Verify if game is won (break if won)
 	4) Computer plays -- modify board array value
 	5) Display board
 	6) Verify if game is won (break if won)

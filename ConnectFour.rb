@@ -2,6 +2,7 @@
 
 class ConnectFour
 	def initialize(height = 6, width = 7) #most common rows and columns
+		@position = 1
 		@rows = height
 		@columns = width
 		createBoard()
@@ -11,23 +12,33 @@ class ConnectFour
 	end
 
 	def createBoard
-		@board = "|" + (1..@columns).to_a.join('') + "|\n"
+		@board = "|" + (' ' * @columns) + "|\n"
 		@board += ("|" + "." * @columns + "|\n") * @rows
 		@board += "=" * (@columns + 2) + "\n"
 	end
 
-	def printBoard
+	def returnBoard
+		index = 0;
+		board2 = @board.gsub(' ') do
+			index += 1
+			@position == index ? '*' : ' '
+		end
+    
 		index = -1
-		@board.gsub('.') do
+		board2.gsub('.') do
 			index += 1
 			@fields[index]
 		end
-    end
+	end
 
-	def dropChip(position)
+	def move(offset)
+	    @position += offset unless @position + offset < 1 || @position + offset > @columns
+	end
+
+	def dropChip
 		@fields.each_index do |i|
 			column = i % @columns
-			if (column == position - 1)
+			if (column == @position - 1)
 				next if @fields[i + @columns] == '.' unless i + @columns >= @fields.length
 				break if @fields[i] != '.'
 				@fields[i] = @player
@@ -35,6 +46,10 @@ class ConnectFour
 				break;
 			end
 		end
+	end
+	
+	def currentPlayer
+		return @player
 	end
 
 	def winner

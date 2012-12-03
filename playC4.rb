@@ -1,49 +1,97 @@
 #!/usr/bin/env ruby
 
+require 'curses'
 require './ConnectFour.rb'
 
-def displayGame(game)
-	puts "Connect 4 by Roger Mingorance"
-	puts game.printBoard() + "\n"
-	puts "Instructions:\n"
-	puts '[number] = place chip on respective column | q = quit | r = reset'
+def initGameDisplay
+	Curses.noecho
+    Curses.init_screen
+    Curses.curs_set 0
+    Curses.stdscr.keypad true
+     
+    Curses.close_screen
+    
+    display(10, 0, "It is player X's turn")
+    display(11, 0, 'Instructions:')
+    display(12, 0, 'q=quit | r=restart | down=place | left/right=move')
+    display(13, 0, "X = Human | O = Computer")
+    display(15, 0, "Connect 4 by Roger Mingorance")
 end
+
+def display(row, column, textToWrite)
+    Curses.setpos row, column
+    Curses.addstr textToWrite
+end
+
+def verifyWinner(game)
+    messageLine = 10
+    thankYouLine = 16
+    if winner = game.winner
+        display(messageLine, 0, "Player #{winner} has won!" + " " * 10)
+        display(thankYouLine, 0, "Thank you for playing!")
+    elsif game.draw?
+        display(messageLine, 0, "No one won (sad) - game is a draw!")
+        display(thankYouLine, 0, "Thank you for playing!")
+    else
+        display(messageLine, 0, "It is player #{game.currentPlayer()}'s turn")
+        return nil
+    end
+    
+    # 'fix' instructions
+    display(12, 18, " " * 35)
+    
+    loop do
+		case Curses.getch
+		when ?q, ?Q then return "q"
+		when ?r, ?R then return "r"
+		end
+    end
+    
+end
+
+#start program
+initGameDisplay()
 
 height = 6
 width = 7
 game = ConnectFour.new(height, width)
-displayGame(game)
+
+display(0, 0, game.returnBoard)
 
 loop do
-	# User's turn
-	playerMove = gets.chomp
-	case playerMove #@todo needs to accomodate for ilegal values!!!!!!!!!
-	when "q", "Q" then break;
-	when "r", "R" then
-		game = ConnectFour.new(height, width)
-	else game.dropChip(Integer(playerMove))
+	#humans turn!
+	case Curses.getch
+	when Curses::Key::LEFT then game.move(-1)
+	when Curses::Key::RIGHT then game.move(1)
+	when Curses::Key::DOWN then game.dropChip
+	when ?q, ?Q then break
+	when ?r, ?R then
+		game = ConnectFour.new
+		display(0, 0, game.returnBoard)
+		next
 	end
-	displayGame(game)
-
-	#verify if game won
-	if winner = game.winner
-		puts "Player #{winner} has won!"
-		break
-	elsif game.draw?
-		puts 'The game ended in a draw...'
-		break
-	end
-
-
-
-
-=begin
-	x 1) Accept input from user -- modify board array value
-	x 2) Display board
-	x 3) Verify if game is won (break if won)
-	4) Computer plays -- modify board array value
-	5) Display board
-	6) Verify if game is won (break if won)
-=end
-
+    
+    #print board after the play and verify if we have a winner
+    display(0, 0, game.returnBoard)
+    case verifyWinner(game)
+    when "q" then break
+    when "r" then
+        game = ConnectFour.new
+        display(0, 0, game.returnBoard)
+        next
+    end
+    
+    #computer turn
+    #game.computerPlay()
+    
+    #print board after the play and verify if we have a winner
+    display(0, 0, game.returnBoard)
+    case verifyWinner(game)
+    when "q" then break
+    when "r" then
+        game = ConnectFour.new
+        display(0, 0, game.returnBoard)
+        next
+    end
+    
 end

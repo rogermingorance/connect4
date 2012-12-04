@@ -34,22 +34,33 @@ class ConnectFour
 	def move(offset)
 	    @position += offset unless @position + offset < 1 || @position + offset > @columns
 	end
+	
+	def setPosition(location)
+		@position = location unless location < 1 || location > @columns
+	end
 
-	def dropChip
+	def dropChip(tempPosition = nil)
+		if tempPosition == nil
+			tempPosition = @position
+		end
 		@fields.each_index do |i|
 			column = i % @columns
-			if (column == @position - 1)
+			if (column == tempPosition - 1)
 				next if @fields[i + @columns] == '.' unless i + @columns >= @fields.length
-				break if @fields[i] != '.'
+				return false if @fields[i] != '.'
 				@fields[i] = @player
 				next_player
-				break;
+				return true
 			end
 		end
 	end
 	
-	def currentPlayer
+	def getCurrentPlayer
 		return @player
+	end
+	
+	def getFields
+		return @fields
 	end
 
 	def winner

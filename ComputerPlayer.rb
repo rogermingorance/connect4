@@ -29,16 +29,19 @@ class ComputerPlayer
 		opponent = "X"
 		empty = "."
 		
-		# - check on right horizontal
+		# - check horizontal right/left
 		currentRow = 0
 		currentColumn = 0
 		for consecutive in (1..3) 
 			@fields.each_slice(@columns) do |r|  # scan each row
 				r.each_cons(consecutive) do |c|
-					if c.uniq.length == 1 and c.uniq[0] == opponent and r[currentColumn+consecutive] == empty
-						#p = (currentRow*@columns)+(currentColumn+consecutive)
-						#return {'position' => p, 'row' => currentRow, 'col' => currentColumn}
-						@points[(currentRow*@columns)+(currentColumn+consecutive)] += 2**consecutive
+					if c.uniq.length == 1 and c.uniq[0] == opponent 
+						if r[currentColumn+consecutive] == empty #on the right
+							@points[(currentRow*@columns)+(currentColumn+consecutive)] += 2**consecutive
+						end
+						if r[currentColumn-1] == empty #on the left
+							@points[(currentRow*@columns)+(currentColumn-1)] += 2**consecutive
+						end
 					end
 					currentColumn += 1
 				end
@@ -48,24 +51,6 @@ class ComputerPlayer
 			currentRow = 0
 		end
 		
-		# - check on the left horizontal
-		currentRow = 0
-		currentColumn = 0
-		for consecutive in (1..3) 
-			@fields.each_slice(@columns) do |r|  # scan each row
-				r.each_cons(consecutive) do |c|
-					if c.uniq.length == 1 and c.uniq[0] == opponent and r[currentColumn-1] == empty
-						#p = (currentRow*@columns)+(currentColumn+consecutive)
-						#return {'position' => p, 'row' => currentRow, 'col' => currentColumn}
-						@points[(currentRow*@columns)+(currentColumn-1)] += 2**consecutive
-					end
-					currentColumn += 1
-				end
-				currentColumn = 0
-				currentRow +=1
-			end
-			currentRow = 0
-		end
 		
 		# - check on top (vertical)
 		currentRow = 0
@@ -105,7 +90,7 @@ class ComputerPlayer
 		for index in (firstIndex..lastIndex)
 			next if index%@columns > @columns-4 #position is to close to the right edge of board
 			if @fields[index] == opponent and @fields[index-@columns+1] == opponent and \
-					 fields[index-(@columns*2)+2] ==  opponent and @fields[index-(@columns*3)+3] == empty
+					 @fields[index-(@columns*2)+2] ==  opponent and @fields[index-(@columns*3)+3] == empty
 				@points[index-(@columns*2)+2] += 8
 			end
 		end
@@ -130,13 +115,101 @@ class ComputerPlayer
 				@points[index-(@columns*2)+2] += 8
 			end
 		end
-		
+	
+		########
+		#	if this was a complete games we would still check other positions
+		#	ie: diagonal: down+left, diagonal: down+right, scenario: X<blank>X, scenario: XX<blank>X, etc....
+		#	I will stop at this point due to the interest of time. The checks above should be sufficient
+		#		to have fun with the game
+		#	Another idea: have those checks left out to be included only if the computer AI level is higher
+		#######
 	
 		return true
 	end
 	
 	def calculatePointsByOffense
-		return
+		me = "O"
+		empty = "."
+		
+		# - check horizontal right/left
+		currentRow = 0
+		currentColumn = 0
+		for consecutive in (1..3) 
+			@fields.each_slice(@columns) do |r|  # scan each row
+				r.each_cons(consecutive) do |c|
+					if c.uniq.length == 1 and c.uniq[0] == me 
+						if r[currentColumn+consecutive] == empty #on the right
+							if consecutive == 3
+								@points[(currentRow*@columns)+(currentColumn+consecutive)] += 16
+							else
+								@points[(currentRow*@columns)+(currentColumn+consecutive)] += 2**consecutive
+							end
+						end
+						if r[currentColumn-1] == empty #on the left
+							if consecutive == 3
+								@points[(currentRow*@columns)+(currentColumn-1)] += 16
+							else
+								@points[(currentRow*@columns)+(currentColumn-1)] += 2**consecutive
+							end
+						end
+					end
+					currentColumn += 1
+				end
+				currentColumn = 0
+				currentRow +=1
+			end
+			currentRow = 0
+		end
+		
+		# - check on top (vertical)
+		currentRow = 0
+		currentColumn = 0
+		@columns.times do |c|
+			column = Array.new
+			@rows.times do |r|
+				index = c + (@columns * r)
+				column.push @fields[index]
+			end
+
+			for consecutive in (1..3)
+				column.each_cons(consecutive) do |i|
+					if i.uniq.length == 1 and i.uniq[0] == me and column[currentRow-1] == empty
+						if consecutive == 3
+							@points[((currentRow-1)*@columns)+(currentColumn)] += 16
+						else
+							@points[((currentRow-1)*@columns)+(currentColumn)] += 2**consecutive
+						end
+					end
+					currentRow += 1
+				end
+				currentRow = 0
+			end
+			currentColumn += 1
+		end
+		
+		# - check 2 diagonal, top + left
+		firstIndex = (@columns * 2) + 2
+		lastIndex = (@columns * @rows) - 1
+		for index in (firstIndex..lastIndex)
+			next if index%@columns < 3 #position is to close to the left edge of board
+			if @fields[index] == me and @fields[index-@columns-1] == me and @fields[index-(@columns*2)-2] == empty
+				@points[index-(@columns*2)-2] += 4
+			end
+		end
+		
+		# - check 3 diagonal, top + left
+		firstIndex = @columns * 3
+		lastIndex = (@columns * @rows) - 1
+		for index in (firstIndex..lastIndex)
+			next if index%@columns < 3 #position is to close to the right edge of board
+			if @fields[index] == me and @fields[index-@columns-1] == me and \
+					 @fields[index-(@columns*2)-2] ==  me and @fields[index-(@columns*3)-3] == empty
+				@points[index-(@columns*2)+2] += 16
+			end
+		end
+		
+		
+		return true
 	end
 	
 	def randomPlay

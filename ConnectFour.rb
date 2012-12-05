@@ -98,8 +98,8 @@ class ConnectFour
 				fields << @fields[next_index]
 			end
 			next if fields.length < 4
-			player = fields.uniq.join
-			return player if player.length == 1 and @players.index(player) != nil
+			player = fields.uniq
+			return player[0] if player.length == 1 and @players.index(player[0]) != nil
 		end
 
 		#check diagonal right

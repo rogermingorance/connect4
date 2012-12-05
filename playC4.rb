@@ -94,6 +94,7 @@ loop do
     when "q" then break
     when "r" then
         game = ConnectFour.new
+        initGameDisplay
         display(0, 0, game.returnBoard)
         next
     end
@@ -101,7 +102,12 @@ loop do
 
     #computer turn
 	if successfullyPlayed == true then
-		game.dropChip(computer.play(game.getFields()))
+		y= game.getFields()
+		#display(18,0, y.to_s)
+		x = computer.play(y)
+		display(17, 0, x.to_s)
+		game.dropChip(x)
+		#game.dropChip(computer.play(game.getFields()))
 		
 		#print board after the play and verify if we have a winner
 		display(0, 0, game.returnBoard)
@@ -109,6 +115,7 @@ loop do
 		when "q" then break
 		when "r" then
 			game = ConnectFour.new
+			initGameDisplay
 			display(0, 0, game.returnBoard)
 			next
 		end

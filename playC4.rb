@@ -59,7 +59,7 @@ def getLevel
 	end 
 	
 	puts "Program must be called with and dificulty level: 0, 1, 2"
-	exit!
+	exit
 end
 
 #start program

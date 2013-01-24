@@ -83,7 +83,7 @@ loop do
 	when Curses::Key::DOWN then successfullyPlayed = game.dropChip()
 	when ?q, ?Q then break
 	when ?r, ?R then
-		game = ConnectFour.new
+		game = ConnectFour.new(height, width)
 		display(0, 0, game.returnBoard)
 		next
 	end
@@ -93,7 +93,7 @@ loop do
     case verifyWinner(game)
     when "q" then break
     when "r" then
-        game = ConnectFour.new
+        game = ConnectFour.new(height, width)
         initGameDisplay
         display(0, 0, game.returnBoard)
         next
@@ -105,7 +105,7 @@ loop do
 		y= game.getFields()
 		#display(18,0, y.to_s)
 		x = computer.play(y)
-		display(17, 0, x.to_s)
+		#display(17, 0, x.to_s)
 		game.dropChip(x)
 		#game.dropChip(computer.play(game.getFields()))
 		
@@ -114,7 +114,7 @@ loop do
 		case verifyWinner(game)
 		when "q" then break
 		when "r" then
-			game = ConnectFour.new
+			game = ConnectFour.new(height, width)
 			initGameDisplay
 			display(0, 0, game.returnBoard)
 			next

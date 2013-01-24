@@ -92,7 +92,7 @@ class ConnectFour
 		@fields.each_index do |f|
 			fields = Array.new
 			fields << @fields[f]
-			(1..3).each do |t|
+			(1..3).each do |t| 
 				next_index = f + ((@columns + 1) * t)
 				next if next_index >= @fields.length or next_index % @columns == 0
 				fields << @fields[next_index]

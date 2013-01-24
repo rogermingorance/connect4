@@ -75,8 +75,8 @@ class ComputerPlayer
 		end
 		
 		# - check 2 diagonal, top + right
-		firstIndex = @columns * 2
-		lastIndex = (@columns * @rows) - 3
+		firstIndex = @columns * 3
+		lastIndex = (@columns * @rows) - 4
 		for index in (firstIndex..lastIndex)
 			next if index%@columns > @columns-4 #position is to close to the right edge of board
 			if @fields[index] == opponent and @fields[index-@columns+1] == opponent and @fields[index-(@columns*2)+2] == empty
@@ -96,7 +96,7 @@ class ComputerPlayer
 		end
 		
 		# - check 2 diagonal, top + left
-		firstIndex = (@columns * 2) + 2
+		firstIndex = (@columns * 3) + 3
 		lastIndex = (@columns * @rows) - 1
 		for index in (firstIndex..lastIndex)
 			next if index%@columns < 3 #position is to close to the left edge of board
@@ -106,24 +106,60 @@ class ComputerPlayer
 		end
 		
 		# - check 3 diagonal, top + left
-		firstIndex = @columns * 3
+		firstIndex = (@columns * 3) + 3
 		lastIndex = (@columns * @rows) - 1
 		for index in (firstIndex..lastIndex)
-			next if index%@columns < 3 #position is to close to the right edge of board
+			next if index%@columns < 3 #position is to close to the left edge of board
 			if @fields[index] == opponent and @fields[index-@columns-1] == opponent and \
 					 @fields[index-(@columns*2)-2] ==  opponent and @fields[index-(@columns*3)-3] == empty
 				@points[index-(@columns*2)+2] += 8
 			end
 		end
+		
+		# - check 2 diagonal, down + right
+		firstIndex = 0
+		lastIndex = (@columns * (@rows - 3)) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns > @columns-4 #position is to close to the right edge of board
+			if @fields[index] == opponent and @fields[index+@columns+1] == opponent and \
+					  @fields[index+(@columns*2)+2] == empty
+				@points[index+(@columns*2)+2] += 4
+			end
+		end
+		
+		# - check 3 diagonal, down + right
+		firstIndex = 0
+		lastIndex = (@columns * (@rows - 3)) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns > @columns-4 #position is to close to the right edge of board
+			if @fields[index] == opponent and @fields[index+@columns+1] == opponent and \
+					  @fields[index+(@columns*2)+2] == opponent and @fields[index+(@columns*3)+3] == empty
+				@points[index+(@columns*3)+3] += 8
+			end
+		end
+		
+		# - check 2 diagonal, down + left
+		firstIndex = 3
+		lastIndex = (@columns * (@rows - 3)) - 1
+		for index in (firstIndex..lastIndex)
+			next if index%@columns < 3 #position is to close to the left edge of board
+			if @fields[index] == opponent and @fields[index+@columns-1] == opponent and \
+					  @fields[index+(@columns*2)-2] == empty
+				@points[index+(@columns*2)+2] += 4
+			end
+		end
 	
-		########
-		#	if this was a complete games we would still check other positions
-		#	ie: diagonal: down+left, diagonal: down+right, scenario: X<blank>X, scenario: XX<blank>X, etc....
-		#	I will stop at this point due to the interest of time. The checks above should be sufficient
-		#		to have fun with the game
-		#	Another idea: have those checks left out to be included only if the computer AI level is higher
-		#######
-	
+		# - check 3 diagonal, down + left
+		firstIndex = 0
+		lastIndex = (@columns * (@rows - 3)) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns < 3 #position is to close to the left edge of board
+			if @fields[index] == opponent and @fields[index+@columns-1] == opponent and \
+					  @fields[index+(@columns*2)-2] == opponent and @fields[index+(@columns*3)-3] == empty
+				@points[index+(@columns*3)-3] += 8
+			end
+		end
+		
 		return true
 	end
 	
@@ -201,10 +237,75 @@ class ComputerPlayer
 		firstIndex = @columns * 3
 		lastIndex = (@columns * @rows) - 1
 		for index in (firstIndex..lastIndex)
-			next if index%@columns < 3 #position is to close to the right edge of board
+			next if index%@columns < 3 #position is to close to the left edge of board
 			if @fields[index] == me and @fields[index-@columns-1] == me and \
 					 @fields[index-(@columns*2)-2] ==  me and @fields[index-(@columns*3)-3] == empty
 				@points[index-(@columns*2)+2] += 16
+			end
+		end
+		
+		# - check 2 diagonal, top + right
+		firstIndex = @columns * 3
+		lastIndex = (@columns * @rows) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns > @columns-4 #position is to close to the right edge of board
+			if @fields[index] == me and @fields[index-@columns-1] == me and @fields[index-(@columns*2)-2] == empty
+				@points[index-(@columns*2)-2] += 4
+			end
+		end
+		
+		# - check 3 diagonal, top + right
+		firstIndex = @columns * 3
+		lastIndex = (@columns * @rows) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns > @columns-4 #position is to close to the right edge of board
+			if @fields[index] == me and @fields[index-@columns-1] == me and \
+					 @fields[index-(@columns*2)-2] ==  me and @fields[index-(@columns*3)-3] == empty
+				@points[index-(@columns*2)+2] += 16
+			end
+		end		
+		
+		# - check 2 diagonal, down + right
+		firstIndex = 0
+		lastIndex = (@columns * (@rows - 3)) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns > @columns-4 #position is to close to the right edge of board
+			if @fields[index] == me and @fields[index+@columns+1] == me and \
+					  @fields[index+(@columns*2)+2] == empty
+				@points[index+(@columns*2)+2] += 4
+			end
+		end
+		
+		# - check 3 diagonal, down + right
+		firstIndex = 0
+		lastIndex = (@columns * (@rows - 3)) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns > @columns-4 #position is to close to the right edge of board
+			if @fields[index] == me and @fields[index+@columns+1] == me and \
+					  @fields[index+(@columns*2)+2] == me and @fields[index+(@columns*3)+3] == empty
+				@points[index+(@columns*3)+3] += 16
+			end
+		end
+		
+		# - check 2 diagonal, down + left
+		firstIndex = 3
+		lastIndex = (@columns * (@rows - 3)) - 1
+		for index in (firstIndex..lastIndex)
+			next if index%@columns < 3 #position is to close to the left edge of board
+			if @fields[index] == me and @fields[index+@columns-1] == me and \
+					  @fields[index+(@columns*2)-2] == empty
+				@points[index+(@columns*2)+2] += 4
+			end
+		end
+	
+		# - check 3 diagonal, down + left
+		firstIndex = 0
+		lastIndex = (@columns * (@rows - 3)) - 4
+		for index in (firstIndex..lastIndex)
+			next if index%@columns < 3 #position is to close to the left edge of board
+			if @fields[index] == me and @fields[index+@columns-1] == me and \
+					  @fields[index+(@columns*2)-2] == me and @fields[index+(@columns*3)-3] == empty
+				@points[index+(@columns*3)-3] += 16
 			end
 		end
 		

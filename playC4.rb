@@ -99,7 +99,6 @@ loop do
 			next
     end
 
-    display(18, 0, successfullyPlayed ? 'true ' : 'false')
     #computer turn
 	if successfullyPlayed == true then
 		y = game.getFields()

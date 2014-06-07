@@ -358,9 +358,7 @@ class ComputerPlayer
 			end
 		end
 
-		x = temp[rand(temp.length())]
-		display(19,0,x.to_s)
-		return (x % @columns) + 1
+		return (temp[rand(temp.length())] % @columns) + 1
 	end
 
 end

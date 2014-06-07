@@ -104,7 +104,7 @@ loop do
 		y = game.getFields()
 		#display(18,0, y.to_s)
 		x = computer.play(y)
-		display(20, 0, x.to_s)
+		#display(20, 0, x.to_s)
 		game.dropChip(x)
 		#game.dropChip(computer.play(game.getFields()))
 

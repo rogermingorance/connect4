@@ -9,9 +9,9 @@ def initGameDisplay
     Curses.init_screen
     Curses.curs_set 0
     Curses.stdscr.keypad true
-     
+
     Curses.close_screen
-    
+
     display(10, 0, "It is player X's turn")
     display(11, 0, 'Instructions:')
     display(12, 0, 'q=quit | r=restart | down=place | left/right=move')
@@ -38,17 +38,17 @@ def verifyWinner(game)
         display(messageLine, 0, "It is player #{game.getCurrentPlayer()}'s turn")
         return nil
     end
-    
+
     # 'fix' instructions
     display(12, 18, " " * 35)
-    
+
     loop do
 		case Curses.getch
-		when ?q, ?Q then return "q"
-		when ?r, ?R then return "r"
+			when ?q, ?Q then return "q"
+			when ?r, ?R then return "r"
 		end
     end
-    
+
 end
 
 def getLevel
@@ -56,8 +56,8 @@ def getLevel
 		if ARGV[0].to_i >= 0 and ARGV[0].to_i <= 2
 			return ARGV[0].to_i
 		end
-	end 
-	
+	end
+
 	puts "Program must be called with and dificulty level: 0, 1, 2"
 	exit
 end
@@ -78,46 +78,46 @@ loop do
 	#humans turn!
 	successfullyPlayed = false
 	case Curses.getch
-	when Curses::Key::LEFT then game.move(-1)
-	when Curses::Key::RIGHT then game.move(1)
-	when Curses::Key::DOWN then successfullyPlayed = game.dropChip()
-	when ?q, ?Q then break
-	when ?r, ?R then
-		game = ConnectFour.new(height, width)
-		display(0, 0, game.returnBoard)
-		next
+		when Curses::Key::LEFT then game.move(-1)
+		when Curses::Key::RIGHT then game.move(1)
+		when Curses::Key::DOWN then successfullyPlayed = game.dropChip()
+		when ?q, ?Q then break
+		when ?r, ?R then
+			game = ConnectFour.new(height, width)
+			display(0, 0, game.returnBoard)
+			next
 	end
-    
+
     #print board after the play and verify if we have a winner
-    display(0, 0, game.returnBoard)
+	display(0, 0, game.returnBoard)
     case verifyWinner(game)
-    when "q" then break
-    when "r" then
-        game = ConnectFour.new(height, width)
-        initGameDisplay
-        display(0, 0, game.returnBoard)
-        next
-    end
-
-
-    #computer turn
-	if successfullyPlayed == true then
-		y= game.getFields()
-		#display(18,0, y.to_s)
-		x = computer.play(y)
-		#display(17, 0, x.to_s)
-		game.dropChip(x)
-		#game.dropChip(computer.play(game.getFields()))
-		
-		#print board after the play and verify if we have a winner
-		display(0, 0, game.returnBoard)
-		case verifyWinner(game)
 		when "q" then break
 		when "r" then
 			game = ConnectFour.new(height, width)
 			initGameDisplay
 			display(0, 0, game.returnBoard)
 			next
+    end
+
+    display(18, 0, successfullyPlayed ? 'true ' : 'false')
+    #computer turn
+	if successfullyPlayed == true then
+		y = game.getFields()
+		#display(18,0, y.to_s)
+		x = computer.play(y)
+		display(20, 0, x.to_s)
+		game.dropChip(x)
+		#game.dropChip(computer.play(game.getFields()))
+
+		#print board after the play and verify if we have a winner
+		display(0, 0, game.returnBoard)
+		case verifyWinner(game)
+			when "q" then break
+			when "r" then
+				game = ConnectFour.new(height, width)
+				initGameDisplay
+				display(0, 0, game.returnBoard)
+				next
 		end
-	end    
+	end
 end

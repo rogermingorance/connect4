@@ -23,7 +23,7 @@ class ConnectFour
 			index += 1
 			@position == index ? '*' : ' '
 		end
-    
+
 		index = -1
 		board2.gsub('.') do
 			index += 1
@@ -34,7 +34,7 @@ class ConnectFour
 	def move(offset)
 	    @position += offset unless @position + offset < 1 || @position + offset > @columns
 	end
-	
+
 	def setPosition(location)
 		@position = location unless location < 1 || location > @columns
 	end
@@ -46,19 +46,20 @@ class ConnectFour
 		@fields.each_index do |i|
 			column = i % @columns
 			if (column == tempPosition - 1)
-				next if @fields[i + @columns] == '.' unless i + @columns >= @fields.length
 				return false if @fields[i] != '.'
+				next if @fields[i + @columns] == '.' unless i + @columns >= @fields.length
 				@fields[i] = @player
-				next_player
+				@player = next_player
 				return true
 			end
 		end
+		return false
 	end
-	
+
 	def getCurrentPlayer
 		return @player
 	end
-	
+
 	def getFields
 		return @fields
 	end
@@ -92,7 +93,7 @@ class ConnectFour
 		@fields.each_index do |f|
 			fields = Array.new
 			fields << @fields[f]
-			(1..3).each do |t| 
+			(1..3).each do |t|
 				next_index = f + ((@columns + 1) * t)
 				next if next_index >= @fields.length or next_index % @columns == 0
 				fields << @fields[next_index]
@@ -128,6 +129,6 @@ class ConnectFour
 	def next_player
 		current_index = @players.index(@player)
 		next_index = (current_index + 1) % @players.size
-		@player = @players[next_index]
+		return @players[next_index]
 	end
 end

@@ -7,10 +7,10 @@ class ComputerPlayer
 		@columns = width
 		@fields = Array.new()
 	end
-	
+
 	def play(fields)
 		@fields = fields
-		if @level == 0 
+		if @level == 0
 			positionToPlay = randomPlay
 		elsif @level == 1
 			@points = Array.new(@columns * @rows).fill(0)
@@ -24,18 +24,18 @@ class ComputerPlayer
 		end
 		return positionToPlay
 	end
-	
+
 	def calculatePointsByDefense
 		opponent = "X"
 		empty = "."
-		
+
 		# - check horizontal right/left
 		currentRow = 0
 		currentColumn = 0
-		for consecutive in (1..3) 
+		for consecutive in (1..3)
 			@fields.each_slice(@columns) do |r|  # scan each row
 				r.each_cons(consecutive) do |c|
-					if c.uniq.length == 1 and c.uniq[0] == opponent 
+					if c.uniq.length == 1 and c.uniq[0] == opponent
 						if r[currentColumn+consecutive] == empty #on the right
 							@points[(currentRow*@columns)+(currentColumn+consecutive)] += 2**consecutive
 						end
@@ -50,8 +50,8 @@ class ComputerPlayer
 			end
 			currentRow = 0
 		end
-		
-		
+
+
 		# - check on top (vertical)
 		currentRow = 0
 		currentColumn = 0
@@ -73,7 +73,7 @@ class ComputerPlayer
 			end
 			currentColumn += 1
 		end
-		
+
 		# - check 2 diagonal, top + right
 		firstIndex = @columns * 3
 		lastIndex = (@columns * @rows) - 4
@@ -83,7 +83,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)+2] += 4
 			end
 		end
-		
+
 		# - check 3 diagonal, top + right
 		firstIndex = @columns * 3
 		lastIndex = (@columns * @rows) - 4
@@ -94,7 +94,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)+2] += 8
 			end
 		end
-		
+
 		# - check 2 diagonal, top + left
 		firstIndex = (@columns * 3) + 3
 		lastIndex = (@columns * @rows) - 1
@@ -104,7 +104,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)-2] += 4
 			end
 		end
-		
+
 		# - check 3 diagonal, top + left
 		firstIndex = (@columns * 3) + 3
 		lastIndex = (@columns * @rows) - 1
@@ -115,7 +115,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)+2] += 8
 			end
 		end
-		
+
 		# - check 2 diagonal, down + right
 		firstIndex = 0
 		lastIndex = (@columns * (@rows - 3)) - 4
@@ -126,7 +126,7 @@ class ComputerPlayer
 				@points[index+(@columns*2)+2] += 4
 			end
 		end
-		
+
 		# - check 3 diagonal, down + right
 		firstIndex = 0
 		lastIndex = (@columns * (@rows - 3)) - 4
@@ -137,7 +137,7 @@ class ComputerPlayer
 				@points[index+(@columns*3)+3] += 8
 			end
 		end
-		
+
 		# - check 2 diagonal, down + left
 		firstIndex = 3
 		lastIndex = (@columns * (@rows - 3)) - 1
@@ -148,7 +148,7 @@ class ComputerPlayer
 				@points[index+(@columns*2)+2] += 4
 			end
 		end
-	
+
 		# - check 3 diagonal, down + left
 		firstIndex = 0
 		lastIndex = (@columns * (@rows - 3)) - 4
@@ -159,21 +159,21 @@ class ComputerPlayer
 				@points[index+(@columns*3)-3] += 8
 			end
 		end
-		
+
 		return true
 	end
-	
+
 	def calculatePointsByOffense
 		me = "O"
 		empty = "."
-		
+
 		# - check horizontal right/left
 		currentRow = 0
 		currentColumn = 0
-		for consecutive in (1..3) 
+		for consecutive in (1..3)
 			@fields.each_slice(@columns) do |r|  # scan each row
 				r.each_cons(consecutive) do |c|
-					if c.uniq.length == 1 and c.uniq[0] == me 
+					if c.uniq.length == 1 and c.uniq[0] == me
 						if r[currentColumn+consecutive] == empty #on the right
 							if consecutive == 3
 								@points[(currentRow*@columns)+(currentColumn+consecutive)] += 16
@@ -196,7 +196,7 @@ class ComputerPlayer
 			end
 			currentRow = 0
 		end
-		
+
 		# - check on top (vertical)
 		currentRow = 0
 		currentColumn = 0
@@ -222,7 +222,7 @@ class ComputerPlayer
 			end
 			currentColumn += 1
 		end
-		
+
 		# - check 2 diagonal, top + left
 		firstIndex = (@columns * 2) + 2
 		lastIndex = (@columns * @rows) - 1
@@ -232,7 +232,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)-2] += 4
 			end
 		end
-		
+
 		# - check 3 diagonal, top + left
 		firstIndex = @columns * 3
 		lastIndex = (@columns * @rows) - 1
@@ -243,7 +243,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)+2] += 16
 			end
 		end
-		
+
 		# - check 2 diagonal, top + right
 		firstIndex = @columns * 3
 		lastIndex = (@columns * @rows) - 4
@@ -253,7 +253,7 @@ class ComputerPlayer
 				@points[index-(@columns*2)-2] += 4
 			end
 		end
-		
+
 		# - check 3 diagonal, top + right
 		firstIndex = @columns * 3
 		lastIndex = (@columns * @rows) - 4
@@ -263,8 +263,8 @@ class ComputerPlayer
 					 @fields[index-(@columns*2)-2] ==  me and @fields[index-(@columns*3)-3] == empty
 				@points[index-(@columns*2)+2] += 16
 			end
-		end		
-		
+		end
+
 		# - check 2 diagonal, down + right
 		firstIndex = 0
 		lastIndex = (@columns * (@rows - 3)) - 4
@@ -275,7 +275,7 @@ class ComputerPlayer
 				@points[index+(@columns*2)+2] += 4
 			end
 		end
-		
+
 		# - check 3 diagonal, down + right
 		firstIndex = 0
 		lastIndex = (@columns * (@rows - 3)) - 4
@@ -286,7 +286,7 @@ class ComputerPlayer
 				@points[index+(@columns*3)+3] += 16
 			end
 		end
-		
+
 		# - check 2 diagonal, down + left
 		firstIndex = 3
 		lastIndex = (@columns * (@rows - 3)) - 1
@@ -297,7 +297,7 @@ class ComputerPlayer
 				@points[index+(@columns*2)+2] += 4
 			end
 		end
-	
+
 		# - check 3 diagonal, down + left
 		firstIndex = 0
 		lastIndex = (@columns * (@rows - 3)) - 4
@@ -308,17 +308,17 @@ class ComputerPlayer
 				@points[index+(@columns*3)-3] += 16
 			end
 		end
-		
-		
+
+
 		return true
 	end
-	
+
 	def randomPlay
 		tempPosition = rand(@rows)
-		
+
 		loop do
 			max = @fields.length() - 1
-		
+
 			while max >= tempPosition do
 				if (max % @columns) != tempPosition
 					max -= 1
@@ -331,32 +331,36 @@ class ComputerPlayer
 					next
 				end
 			end
-			
+
 			tempPosition = rand(@rows)
-		end	
+		end
 	end
-	
+
 	private
-	
+
 	def pickHighestCalculatedNumber
 		#reset points on spaces where the space underneath is unoccupied
+		#also, reset points if space is un-occupied
 		@points.each_index do |i|
-			next if i > (@rows * @columns) - 2 #bottom row on board, no need to test
+			@points[i] = 0 if @fields[i] != "."
+			next if i >= (@rows-1) * @columns #bottom row on board, no need to test
 			@points[i] = 0 if @fields[i+@columns] == "."
 		end
-		
+
 		max = @points.max()
-		
+
 		#return @points
-		
+
 		temp = Array.new()
 		@points.each_with_index do |item, index|
 			if item == max
 				temp << index
 			end
 		end
-		return (temp[rand(temp.length())] % @columns) + 1
+
+		x = temp[rand(temp.length())]
+		display(19,0,x.to_s)
+		return (x % @columns) + 1
 	end
-	
+
 end
-	

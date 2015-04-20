@@ -1,23 +1,24 @@
-#!/usr/bin/env ruby
-
+#
+# Docs
+#
 class ConnectFour
   def initialize(height = 6, width = 7) # most common rows and columns
     @position = 1
     @rows = height
     @columns = width
-    createBoard
+    create_board
     @players = %w(X O)
     @player = @players.first
     @fields = Array.new(@columns * @rows).fill('.')
   end
 
-  def createBoard
+  def create_board
     @board = '|' + (' ' * @columns) + "|\n"
     @board += ('|' + '.' * @columns + "|\n") * @rows
     @board += '=' * (@columns + 2) + "\n"
   end
 
-  def returnBoard
+  def return_board
     index = 0
     board2 = @board.gsub(' ') do
       index += 1
@@ -39,13 +40,13 @@ class ConnectFour
     @position = location unless location < 1 || location > @columns
   end
 
-  def dropChip(tempPosition = nil)
-    if tempPosition.nil?
-      tempPosition = @position
+  def dropChip(temp_position = nil)
+    if temp_position.nil?
+      temp_position = @position
     end
     @fields.each_index do |i|
       column = i % @columns
-      if (column == tempPosition - 1)
+      if (column == temp_position - 1)
         return false if @fields[i] != '.'
         next if @fields[i + @columns] == '.' unless i + @columns >= @fields.length
         @fields[i] = @player

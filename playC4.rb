@@ -1,8 +1,9 @@
-#!/usr/bin/env ruby
-
+#
+# Docs
+#
 require 'curses'
 require './ConnectFour.rb'
-require './ComputerPlayer.rb'
+require './computer_player.rb'
 
 def init_game_display
   Curses.noecho
@@ -25,7 +26,7 @@ def display(row, column, textToWrite)
   Curses.addstr textToWrite
 end
 
-def verifyWinner(game)
+def verify_winner(game)
   message_line = 10
   thank_you_line = 16
   if winner = game.winner
@@ -50,7 +51,7 @@ def verifyWinner(game)
   end
 end
 
-def get_level
+def fetch_level
   if ARGV[0] =~ /\A[0-9]+\Z/
     if ARGV[0].to_i >= 0 && ARGV[0].to_i <= 2
       return ARGV[0].to_i
@@ -68,12 +69,12 @@ height = 6
 width = 7
 game = ConnectFour.new(height, width)
 
-dificulty_level = get_level
+dificulty_level = fetch_level
 computer = ComputerPlayer.new(dificulty_level, height, width)
 
-display(0, 0, game.returnBoard)
+display(0, 0, game.return_board)
 
-loop do
+loop do # rubocop:disable Style/Next
   # humans turn!
   successfully_played = false
   case Curses.getch
@@ -83,18 +84,18 @@ loop do
   when 'q', 'Q' then break
   when 'r', 'R' then
     game = ConnectFour.new(height, width)
-    display(0, 0, game.returnBoard)
+    display(0, 0, game.return_board)
     next
   end
 
   # print board after the play and verify if we have a winner
-  display(0, 0, game.returnBoard)
-  case verifyWinner(game)
+  display(0, 0, game.return_board)
+  case verify_winner(game)
   when 'q' then break
   when 'r' then
     game = ConnectFour.new(height, width)
     init_game_display
-    display(0, 0, game.returnBoard)
+    display(0, 0, game.return_board)
     next
   end
 
@@ -108,13 +109,13 @@ loop do
     # game.dropChip(computer.play(game.getFields()))
 
     # print board after the play and verify if we have a winner
-    display(0, 0, game.returnBoard)
-    case verifyWinner(game)
+    display(0, 0, game.return_board)
+    case verify_winner(game)
     when 'q' then break
     when 'r' then
       game = ConnectFour.new(height, width)
       init_game_display
-      display(0, 0, game.returnBoard)
+      display(0, 0, game.return_board)
       next
     end
   end

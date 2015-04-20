@@ -29,7 +29,7 @@ end
 def verify_winner(game)
   message_line = 10
   thank_you_line = 16
-  if winner = game.winner
+  if winner = game.winner           # rubocop:disable Lint/AssignmentInCondition
     display(message_line, 0, "Player #{winner} has won!" + ' ' * 10)
     display(thank_you_line, 0, 'Thank you for playing!')
   elsif game.draw?
@@ -74,7 +74,7 @@ computer = ComputerPlayer.new(dificulty_level, height, width)
 
 display(0, 0, game.return_board)
 
-loop do # rubocop:disable Style/Next
+loop do                 # rubocop:disable Style/Next
   # humans turn!
   successfully_played = false
   case Curses.getch

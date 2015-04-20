@@ -12,6 +12,9 @@ class ConnectFour
     @fields = Array.new(@columns * @rows).fill('.')
   end
 
+  attr_reader :player
+  attr_reader :fields
+
   def create_board
     @board = '|' + (' ' * @columns) + "|\n"
     @board += ('|' + '.' * @columns + "|\n") * @rows
@@ -36,15 +39,11 @@ class ConnectFour
     @position += offset unless @position + offset < 1 || @position + offset > @columns
   end
 
-  def setPosition(location)
-    @position = location unless location < 1 || location > @columns
-  end
-
-  def dropChip(temp_position = nil)
+  def drop_chip(temp_position = nil)
     if temp_position.nil?
       temp_position = @position
     end
-    @fields.each_index do |i|
+    @fields.each_index do |i|       # rubocop:disable Style/Next
       column = i % @columns
       if (column == temp_position - 1)
         return false if @fields[i] != '.'
@@ -55,14 +54,6 @@ class ConnectFour
       end
     end
     false
-  end
-
-  def getCurrentPlayer
-    @player
-  end
-
-  def getFields
-    @fields
   end
 
   def winner
@@ -78,7 +69,7 @@ class ConnectFour
 
     # check vertical
     @columns.times do |c|
-      column = Array.new
+      column = []
       @rows.times do |r|
         index = c + (@columns * r)
         column.push @fields[index]
@@ -92,7 +83,7 @@ class ConnectFour
 
     # check diagonal left
     @fields.each_index do |f|
-      fields = Array.new
+      fields = []
       fields << @fields[f]
       (1..3).each do |t|
         next_index = f + ((@columns + 1) * t)
@@ -106,7 +97,7 @@ class ConnectFour
 
     # check diagonal right
     @fields.each_index do |f|
-      fields = Array.new
+      fields = []
       fields << @fields[f]
       (1..3).each do |t|
         next_index = f - ((@columns - 1) * t)

@@ -2,7 +2,7 @@
 # Docs
 #
 require 'curses'
-require './ConnectFour.rb'
+require './connect_four.rb'
 require './computer_player.rb'
 
 def init_game_display
@@ -36,7 +36,7 @@ def verify_winner(game)
     display(message_line, 0, 'No one won (sad) - game is a draw!')
     display(thank_you_line, 0, 'Thank you for playing!')
   else
-    display(thank_you_line, 0, "It is player #{game.getCurrentPlayer}'s turn")
+    display(thank_you_line, 0, "It is player #{game.player}'s turn")
     return nil
   end
 
@@ -80,7 +80,7 @@ loop do # rubocop:disable Style/Next
   case Curses.getch
   when Curses::Key::LEFT then game.move(-1)
   when Curses::Key::RIGHT then game.move(1)
-  when Curses::Key::DOWN then successfully_played = game.dropChip
+  when Curses::Key::DOWN then successfully_played = game.drop_chip
   when 'q', 'Q' then break
   when 'r', 'R' then
     game = ConnectFour.new(height, width)
@@ -101,12 +101,12 @@ loop do # rubocop:disable Style/Next
 
   # computer turn
   if successfully_played == true
-    y = game.getFields
+    y = game.fields
     # display(18,0, y.to_s)
     x = computer.play(y)
     # display(20, 0, x.to_s)
-    game.dropChip(x)
-    # game.dropChip(computer.play(game.getFields()))
+    game.drop_chip(x)
+    # game.drop_chip(computer.play(game.fields()))
 
     # print board after the play and verify if we have a winner
     display(0, 0, game.return_board)
